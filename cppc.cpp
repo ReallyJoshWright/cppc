@@ -29,7 +29,7 @@ printHelp() {
 void
 build() {
     std::string command = compiler
-        + " -std=c++23 build.cpp -o build && ./build";
+        + " -std=c++23 -I\"$HOME/.config/.cppc\" build.cpp -o build && ./build";
     system(command.c_str());
     std::string clean = "rm -rf build";
     system(clean.c_str());
@@ -38,10 +38,11 @@ build() {
 void
 createBuildCpp(std::filesystem::path build_cpp) {
     std::ofstream file(build_cpp);
+    file << "#include <vector>\n" << std::endl;
     file << "#include \"builder.h\"\n" << std::endl;
     file << "int main() {" << std::endl;
     file << "    Builder builder;\n" << std::endl;
-    file << "    Vector<Debug> debug;" << std::endl;
+    file << "    std::vector<Debug> debug;" << std::endl;
     file << "    debug.push_back(Debug::G);" << std::endl;
     file << "    debug.push_back(Debug::Wall);" << std::endl;
     file << "    debug.push_back(Debug::Wextra);" << std::endl;
@@ -74,7 +75,7 @@ createProject(std::string project_name) {
     std::filesystem::path name = project_name;
     std::filesystem::path src = "src";
     std::filesystem::path dirs = name / src;
-    std::filesystem::create_directory(dirs);
+    std::filesystem::create_directories(dirs);
     std::filesystem::path main_cpp = dirs / "main.cpp";
     std::filesystem::path build_cpp = name / "build.cpp";
     createBuildCpp(build_cpp);
