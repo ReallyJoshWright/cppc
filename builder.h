@@ -11,15 +11,19 @@
 // prepocessor statements
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
+    inline std::string os = "windows";
     inline String compiler = "mingw";
     inline String compiler_full_path = "";
 #elif __APPLE__
+    inline std::string os = "macos";
     inline String compiler = "clang++";
     inline String compiler_full_path = "";
 #elif __linux__
+    inline std::string os = "linux";
     inline std::string compiler = "g++";
     inline std::string compiler_full_path = "/usr/bin/g++";
 #else
+    inline std::string os = "linux";
     inline String compiler = "g++";
     inline String compiler_full_path = "/usr/bin/g++";
 #endif
@@ -48,6 +52,12 @@ enum class Optimize {
     Debug,
 };
 
+enum class Targets {
+    Linux,
+    Windows,
+    MacOS,
+};
+
 ///////////////////////////////////////////////////////////////////////////////
 // structs
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,6 +67,7 @@ struct Options {
     Version version;
     std::vector<Debug> debug;
     Optimize optimize;
+    Targets target;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -295,6 +306,14 @@ class Builder {
                 version_string = "-std=c++20";
             } else if (options.version == Version::V23) {
                 version_string = "-std=c++23";
+            }
+
+            if (os == "linux") {
+                if (options.target == Targets::Linux) {
+                    compiler = "g++";
+                } else if (options.target == Targets::Windows) {
+                    compiler = "x86_64-w64-mingw32-g++";
+                }
             }
 
             unsigned long dir_count = include_dirs.size();

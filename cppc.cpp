@@ -62,6 +62,7 @@ createBuildCpp(std::filesystem::path build_cpp) {
     file << "        .version = Version::V23," << std::endl;
     file << "        .debug = debug," << std::endl;
     file << "        .optimize = Optimize::Debug," << std::endl;
+    file << "        .target = Targets::Linux," << std::endl;
     file << "    });\n" << std::endl;
     file << "    builder.build();" << std::endl;
     file << "}" << std::endl;

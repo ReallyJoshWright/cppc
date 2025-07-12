@@ -16,6 +16,7 @@ build step with make will not be necessary, but still available
 - You are using g++ as the compiler
 - You are on Linux
 - You have make installed
+- You have the mingw tools installed
 
 ## Getting started
 
@@ -48,7 +49,7 @@ or
 
 ## Cross platform todo
 - add install and uninstall scripts
-- add cross platform target builds
+- add cross platform target builds (partially implemented)
 
 ## Examples
 
@@ -75,6 +76,7 @@ int main(int argc, char *argv[]) {
         .version = Version::V23,
         .debug = debug,
         .optimize = Optimize::Debug,
+        .target = Targets::Linux,
     });
 
     builder.addIncludeDir("-I./include");
@@ -109,6 +111,7 @@ int main(int argc, char *argv[]) {
         .version = Version::V23,
         .debug = debug,
         .optimize = Optimize::Debug,
+        .target = Targets::Linux,
     });
 
     builder.addIncludeDir("-I/usr/include/qt6/QtWidgets");
