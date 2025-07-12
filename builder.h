@@ -5,6 +5,7 @@
 #include <vector>
 #include <filesystem>
 #include <fstream>
+#include <string>
 
 ///////////////////////////////////////////////////////////////////////////////
 // prepocessor statements
@@ -120,6 +121,7 @@ class Builder {
             std::string version = getVersionString(options.version);
             std::filesystem::path cwd_path = std::filesystem::current_path();
             std::string cwd = cwd_path.string();
+            std::string sub_root_source_path = cleanUpSubDir(options.root_source_file);
 
             file << "[" << std::endl;
             file << "  {" << std::endl;
@@ -131,6 +133,7 @@ class Builder {
             }
             file << "      \"" << optimize << "\"," << std::endl;
             file << "      \"" << version << "\"," << std::endl;
+            file << "      \"-I" << getHomePath() << "/.config/.cppc\"," << std::endl;
             for (auto i : include_dirs) {
                 file << "      \"" << i << "\"," << std::endl;
             }
@@ -142,7 +145,7 @@ class Builder {
             file << "      \"" << options.root_source_file << "\"," << std::endl;
             file << "    ]," << std::endl;
             file << "    \"directory\": \"" << cwd << "\"," << std::endl;
-            file << "    \"file\": \"" << cwd << "/" << options.root_source_file << "\"," << std::endl;
+            file << "    \"file\": \"" << cwd << "/" << sub_root_source_path << "\"," << std::endl;
             file << "    \"output\": \"" << cwd << "/" << options.name << "\"" << std::endl;
             if (source_files.size() == 0) {
                 file << "  }" << std::endl;
@@ -334,5 +337,18 @@ class Builder {
 
         std::string removeFirstTwoChars(std::string item) {
             return item.erase(0, 2);
+        }
+
+        std::string getHomePath() {
+            std::string home = std::getenv("HOME");
+            return home;
+        }
+
+        std::string cleanUpSubDir(std::string root_source_file) {
+            if (root_source_file.substr(0, 2) == "./") {
+                return root_source_file.erase(0, 2);
+            } else {
+                return root_source_file;
+            }
         }
 };

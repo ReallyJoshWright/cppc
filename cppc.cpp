@@ -29,7 +29,7 @@ printHelp() {
 void
 build() {
     std::string command = compiler
-        + " -std=c++23 -I\"$HOME/.config/.cppc\" build.cpp -o build && ./build";
+        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build";
     system(command.c_str());
     std::string clean = "rm -rf build";
     system(clean.c_str());

@@ -28,19 +28,16 @@ After cloning the repo:
 - ./app
 
 ## Issues
-- fix file: in compile_commands.json when main.cpp is in a subdirectory
-    "file": "/home/josh/Coding/cpp/Examples/build_test/./src/main.cpp",
 
 ## Build system todo
 - add run option
 - add shared object creation
 - add static lib creation
 - add static build option
-- idiot proof it
+- idiot proof it (error handling)
 - add clean option
 - add zip option
 - add tar option
-- add new option
 - add testing option
 - add verbose and -q for quiet builds
 
