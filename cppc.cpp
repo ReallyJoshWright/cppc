@@ -36,12 +36,21 @@ build() {
 }
 
 void
+run() {
+    std::string command = compiler
+        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build run";
+    system(command.c_str());
+    std::string clean = "rm -rf build";
+    system(clean.c_str());
+}
+
+void
 createBuildCpp(std::filesystem::path build_cpp) {
     std::ofstream file(build_cpp);
     file << "#include <vector>\n" << std::endl;
     file << "#include \"builder.h\"\n" << std::endl;
-    file << "int main() {" << std::endl;
-    file << "    Builder builder;\n" << std::endl;
+    file << "int main(int argc, char *argv[]) {" << std::endl;
+    file << "    Builder builder(argc, argv);\n" << std::endl;
     file << "    std::vector<Debug> debug;" << std::endl;
     file << "    debug.push_back(Debug::G);" << std::endl;
     file << "    debug.push_back(Debug::Wall);" << std::endl;
@@ -80,9 +89,6 @@ createProject(std::string project_name) {
     std::filesystem::path build_cpp = name / "build.cpp";
     createBuildCpp(build_cpp);
     createMainCpp(main_cpp);
-    // TODO: run cppc build in name dir
-    // TODO: fix .src/main.cpp compile json bug
-    // TODO: setup auto install script and paths
 }
 
 int
@@ -93,6 +99,8 @@ main(int argc, char *argv[]) {
         std::string command = argv[1];
         if (command == "build") {
             build();
+        } else if (command == "run") {
+            run();
         } else {
             printHelp();
         }

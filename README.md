@@ -24,13 +24,14 @@ After cloning the repo:
 - open a new terminal or source .zshrc (source ~/.zshrc)
 - run cppc new project-name
 - cd into project-name
-- run cppc build
-- ./app
+- run cppc build and ./app
+or
+- run cppc run
 
 ## Issues
 
 ## Build system todo
-- add run option
+- add defaults in builder.h
 - add shared object creation
 - add static lib creation
 - add static build option
@@ -45,6 +46,7 @@ After cloning the repo:
 
 ## Cross platform todo
 - add install and uninstall scripts
+- add cross platform target builds
 
 ## Examples
 
@@ -56,8 +58,8 @@ After cloning the repo:
 
 #include "builder.h"
 
-int main() {
-    Builder builder;
+int main(int argc, char *argv[]) {
+    Builder builder(argc, argv);
 
     std::vector<Debug> debug;
     debug.push_back(Debug::G);
@@ -90,8 +92,8 @@ int main() {
 
 #include "builder.h"
 
-int main() {
-    Builder builder;
+int main(int argc, char *argv[]) {
+    Builder builder(argc, argv);
 
     std::vector<Debug> debug;
     debug.push_back(Debug::G);

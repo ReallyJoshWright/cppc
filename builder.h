@@ -67,6 +67,17 @@ class Builder {
         ///////////////////////////////////////////////////////////////////////
         // public methods
         ///////////////////////////////////////////////////////////////////////
+        Builder(int argc, char *argv[]) {
+            yes_run = false;
+
+            if (argc > 1) {
+                std::string cmd = argv[1];
+                if (cmd == "run") {
+                    yes_run = true;
+                }
+            }
+        }
+
         void setOptions(Options options) {
             this->options = options;
         }
@@ -91,6 +102,11 @@ class Builder {
             createCompileCommands();
             std::string exe = getCompileCommand();
             std::system(exe.c_str());
+
+            if (yes_run) {
+                std::string run = "./" + options.name;
+                std::system(run.c_str());
+            }
         }
 
     private:
@@ -102,6 +118,7 @@ class Builder {
         std::vector<std::string> source_files;
         std::vector<std::string> lib_dirs;
         std::vector<std::string> libs;
+        bool yes_run;
 
         ///////////////////////////////////////////////////////////////////////
         // private methods
