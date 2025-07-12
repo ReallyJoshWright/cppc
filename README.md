@@ -22,8 +22,8 @@ build step with make will not be necessary, but still available
 After cloning the repo:
 - run the install.sh (./install.sh)
 - open a new terminal or source .zshrc (source ~/.zshrc)
-- run cppc new <project-name>
-- cd into <project-name>
+- run cppc new project-name
+- cd into project-name
 - run cppc build
 - ./app
 
