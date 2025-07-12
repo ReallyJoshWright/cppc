@@ -51,13 +51,15 @@ After cloning the repo:
 ### build.cpp example
 ```cpp
 
-// builder.cpp
-#include "helpers/include/my_builder.h"
+// build.cpp
+#include <vector>
+
+#include "builder.h"
 
 int main() {
     Builder builder;
 
-    Vector<Debug> debug;
+    std::vector<Debug> debug;
     debug.push_back(Debug::G);
     debug.push_back(Debug::Wall);
     debug.push_back(Debug::Wextra);
@@ -84,12 +86,14 @@ int main() {
 ```c++
 
 // build.cpp
-#include "my_builder.h"
+#include <vector>
+
+#include "builder.h"
 
 int main() {
     Builder builder;
 
-    Vector<Debug> debug;
+    std::vector<Debug> debug;
     debug.push_back(Debug::G);
     debug.push_back(Debug::Wall);
     debug.push_back(Debug::Wextra);
