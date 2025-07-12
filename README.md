@@ -20,13 +20,15 @@ build step with make will not be necessary, but still available
 ## Getting started
 
 After cloning the repo:
-- run the install.sh (./install.sh)
-- open a new terminal or source .zshrc (source ~/.zshrc)
-- run cppc new project-name
-- cd into project-name
-- run cppc build and ./app
+- run the install.sh (***./install.sh***)
+- open a new terminal or source .zshrc (***source ~/.zshrc***)
+- run ***cppc new `<project-name>`***
+- ***cd*** into `<project-name>`
+- run: ***cppc build*** and ***./app***
+
 or
-- run cppc run
+
+- run: ***cppc run***
 
 ## Issues
 
