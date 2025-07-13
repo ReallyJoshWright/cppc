@@ -5,7 +5,7 @@
 #include <fstream>
 
 #ifdef _WIN32
-    std::string compiler = "mingw";
+    std::string compiler = "g++";
 #elif __APPLE__
     std::string compiler = "clang++";
 #elif __linux__
