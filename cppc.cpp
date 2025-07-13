@@ -86,7 +86,7 @@ createBuildCpp(std::filesystem::path build_cpp) {
 void
 createMainCpp(std::filesystem::path main_cpp) {
     std::ofstream file(main_cpp);
-    file << "#include<iostream>\n" << std::endl;
+    file << "#include <iostream>\n" << std::endl;
     file << "int main() {" << std::endl;
     file << "    std::cout << \"Hello World!\" << std::endl;\n" << std::endl;
     file << "    return 0;" << std::endl;
