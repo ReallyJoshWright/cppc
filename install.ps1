@@ -33,3 +33,6 @@ if (-not ($pathComponents -contains $resolvedInstallDir)) {
 }
 
 Write-Host "Installation Complete!"
+
+# Maybe run this
+# Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
