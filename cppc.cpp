@@ -5,12 +5,16 @@
 #include <fstream>
 
 #ifdef _WIN32
+    std::string os = "windows";
     std::string compiler = "g++";
 #elif __APPLE__
+    std::string os = "macos";
     std::string compiler = "clang++";
 #elif __linux__
+    std::string os = "linux";
     std::string compiler = "g++";
 #else
+    std::string os = "linux";
     std::string compiler = "g++";
 #endif
 
@@ -28,11 +32,19 @@ printHelp() {
 
 void
 build() {
-    std::string command = compiler
-        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build";
-    system(command.c_str());
-    std::string clean = "rm -rf build";
-    system(clean.c_str());
+    if (os == "linux") {
+        std::string command = compiler
+            + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build";
+        system(command.c_str());
+        std::string clean = "rm -rf build";
+        system(clean.c_str());
+    } else if (os == "windows") {
+        std::string command = compiler
+            + " -std=c++17 -I$HOME/.config/.cppc build.cpp -o build.exe && ./build.exe -static-libgcc -static-libstdc++";
+        system(command.c_str());
+        std::string clean = "Remove-Item -Path build.exe -Recurse -Force";
+        system(clean.c_str());
+    }
 }
 
 void
