@@ -314,6 +314,10 @@ class Builder {
                 } else if (options.target == Targets::Windows) {
                     compiler = "x86_64-w64-mingw32-g++";
                 }
+            } else if (os == "windows") {
+                if (options.target == Targets::Windows) {
+                    compiler = "g++";
+                }
             }
 
             unsigned long dir_count = include_dirs.size();
