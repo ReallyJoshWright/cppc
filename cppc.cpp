@@ -40,9 +40,11 @@ build() {
         system(clean.c_str());
     } else if (os == "windows") {
         std::string command = compiler
-            + " -std=c++17 -I$HOME/.config/.cppc build.cpp -o build.exe && ./build.exe -static-libgcc -static-libstdc++";
+            + " -std=c++17 -I\"%USERPROFILE%\\.config\\.cppc\" build.cpp -o build.exe -static-libgcc -static-libstdc++";
         system(command.c_str());
-        std::string clean = "Remove-Item -Path build.exe -Recurse -Force";
+        std::string exe_cmd = "build.exe";
+        system(exe_cmd.c_str());
+        std::string clean = "del build.exe";
         system(clean.c_str());
     }
 }
