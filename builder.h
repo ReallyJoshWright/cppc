@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
     inline std::string os = "windows";
-    inline String compiler = "mingw";
+    inline String compiler = "g++";
     inline String compiler_full_path = "";
 #elif __APPLE__
     inline std::string os = "macos";
