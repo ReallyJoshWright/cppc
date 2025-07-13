@@ -11,7 +11,7 @@ try {
 
 Write-Host "Adding cppc.exe binary and builder.h to $installDir"
 try {
-    Copy-Item -Path "cppc" -Destination $installDir -Force -ErrorAction Stop
+    Copy-Item -Path "cppc.exe" -Destination $installDir -Force -ErrorAction Stop
     Copy-Item -Path "builder.h" -Destination $installDir -Force -ErrorAction Stop
 } catch {
     Write-Error "Error copying files: $($_.Exception.Message)"
