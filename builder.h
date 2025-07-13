@@ -12,20 +12,20 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
     inline std::string os = "windows";
-    inline String compiler = "g++";
-    inline String compiler_full_path = "";
+    inline std::string compiler = "g++";
+    inline std::string compiler_full_path = "";
 #elif __APPLE__
     inline std::string os = "macos";
-    inline String compiler = "clang++";
-    inline String compiler_full_path = "";
+    inline std::string compiler = "clang++";
+    inline std::string compiler_full_path = "";
 #elif __linux__
     inline std::string os = "linux";
     inline std::string compiler = "g++";
     inline std::string compiler_full_path = "/usr/bin/g++";
 #else
     inline std::string os = "linux";
-    inline String compiler = "g++";
-    inline String compiler_full_path = "/usr/bin/g++";
+    inline std::string compiler = "g++";
+    inline std::string compiler_full_path = "/usr/bin/g++";
 #endif
 
 ///////////////////////////////////////////////////////////////////////////////
