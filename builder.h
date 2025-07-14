@@ -332,6 +332,12 @@ class Builder {
                     + " -o "
                     + options.name;
 
+                if (os == "windows") {
+                    exe = exe
+                        + " -static-libgcc"
+                        + " -static-libstdc++";
+                }
+
                 return exe;
             } else {
                 std::string dir_string = "";
@@ -370,6 +376,12 @@ class Builder {
                     + " -o "
                     + options.name
                     + lib_string;
+
+                if (os == "windows") {
+                    exe = exe
+                        + " -static-libgcc"
+                        + " -static-libstdc++";
+                }
 
                 return exe;
             }
