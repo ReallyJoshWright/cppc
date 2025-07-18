@@ -34,6 +34,10 @@ or
 ## Issues
 
 ## Build system todo
+- add verbose and -q for quiet builds
+- add testing option (in file and own file using namespaces)
+- add incremental building with MP MD flags
+- add windows cl support with msvc
 - add defaults in builder.h
 - add shared object creation
 - add static lib creation
@@ -42,8 +46,6 @@ or
 - add clean option
 - add zip option
 - add tar option
-- add testing option
-- add verbose and -q for quiet builds
 
 ## Package manager maybe
 

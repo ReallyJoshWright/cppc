@@ -3,19 +3,24 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <filesystem>
 
 #ifdef _WIN32
     std::string os = "windows";
     std::string compiler = "g++";
+    inline std::string compiler_full_path = "";
 #elif __APPLE__
     std::string os = "macos";
     std::string compiler = "clang++";
+    inline std::string compiler_full_path = "";
 #elif __linux__
     std::string os = "linux";
     std::string compiler = "g++";
+    inline std::string compiler_full_path = "/usr/bin/g++";
 #else
     std::string os = "linux";
     std::string compiler = "g++";
+    inline std::string compiler_full_path = "/usr/bin/g++";
 #endif
 
 void
@@ -30,27 +35,67 @@ printHelp() {
     std::cout << message << std::endl;
 }
 
-void
-build() {
-    if (os == "linux") {
-        std::string command = compiler
-            + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build";
-        system(command.c_str());
-        std::string clean = "rm -rf build";
-        system(clean.c_str());
-    } else if (os == "windows") {
-        std::string command = compiler
-            + " -std=c++17 -I\"%USERPROFILE%\\.config\\.cppc\" build.cpp -o build.exe -static-libgcc -static-libstdc++";
-        system(command.c_str());
-        std::string exe_cmd = "build.exe";
-        system(exe_cmd.c_str());
-        std::string clean = "del build.exe";
-        system(clean.c_str());
+bool
+buildFileExists() {
+    std::filesystem::path build_file = "build.cpp";
+    if (std::filesystem::exists(build_file)) {
+        return true;
+    } else {
+        return false;
     }
 }
 
 void
-run() {
+buildLinux() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+
+    std::string command = compiler
+        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build";
+    system(command.c_str());
+    std::string clean = "rm -rf build";
+    system(clean.c_str());
+}
+
+void
+buildWindows() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+
+    std::string command = compiler
+        + " -std=c++17 -I\"%USERPROFILE%\\.config\\.cppc\" build.cpp -o build.exe -static-libgcc -static-libstdc++";
+    system(command.c_str());
+    std::string exe_cmd = "build.exe";
+    system(exe_cmd.c_str());
+    std::string clean = "del build.exe";
+    system(clean.c_str());
+}
+
+void
+runLinux() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+
+    std::string command = compiler
+        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build run";
+    system(command.c_str());
+    std::string clean = "rm -rf build";
+    system(clean.c_str());
+}
+
+void
+runWindows() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+
     std::string command = compiler
         + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build run";
     system(command.c_str());
@@ -95,6 +140,50 @@ createMainCpp(std::filesystem::path main_cpp) {
 }
 
 void
+createCompileCommands(std::string project_name) {
+    std::filesystem::path project_name_path = project_name;
+    std::filesystem::path cwd_path = std::filesystem::current_path();
+    std::filesystem::path full_path = cwd_path / project_name_path;
+    std::string cwd = full_path;
+
+    std::filesystem::path filename_path = "compile_commands.json";
+    std::filesystem::path filename_full_path = full_path / filename_path;
+
+    std::string filename = filename_full_path;
+    std::ofstream file(filename, std::ios::out);
+
+    if (!file.is_open()) {
+        std::cerr << "Error: Could not open the file "
+                  << filename << std::endl;
+        return;
+    }
+
+    file << "[" << std::endl;
+    file << "  {" << std::endl;
+    file << "    \"arguments\": [" << std::endl;
+    file << "      \"" + compiler_full_path + "\"," << std::endl;
+    file << "      \"-c\"," << std::endl;
+    file << "      \"-g\"," << std::endl;
+    file << "      \"-Wall\"," << std::endl;
+    file << "      \"-Wextra\"," << std::endl;
+    file << "      \"-pedantic\"," << std::endl;
+    file << "      \"" << "-O0" << "\"," << std::endl;
+    file << "      \"" << "-std=c++23" << "\"," << std::endl;
+    file << "      \"-I" << std::getenv("HOME") << "/.config/.cppc\"," << std::endl;
+    file << "      \"-o\"," << std::endl;
+    file << "      \"app\"," << std::endl;
+    file << "      \"./src/main.cpp\"," << std::endl;
+    file << "    ]," << std::endl;
+    file << "    \"directory\": \"" << cwd << "\"," << std::endl;
+    file << "    \"file\": \"" << cwd << "/" << "src/main.cpp" << "\"," << std::endl;
+    file << "    \"output\": \"" << cwd << "/" << "app" << "\"" << std::endl;
+    file << "  }" << std::endl;
+    file << "]" << std::endl;
+
+    file.close();
+}
+
+void
 createProject(std::string project_name) {
     std::filesystem::path name = project_name;
     std::filesystem::path src = "src";
@@ -104,29 +193,58 @@ createProject(std::string project_name) {
     std::filesystem::path build_cpp = name / "build.cpp";
     createBuildCpp(build_cpp);
     createMainCpp(main_cpp);
+    createCompileCommands(project_name);
 }
 
 int
 main(int argc, char *argv[]) {
-    if (argc == 1) {
-        printHelp();
-    } else if (argc == 2) {
-        std::string command = argv[1];
-        if (command == "build") {
-            build();
-        } else if (command == "run") {
-            run();
+    if (os == "linux") {
+        if (argc == 1) {
+            printHelp();
+        } else if (argc == 2) {
+            std::string command = argv[1];
+            if (command == "build") {
+                buildLinux();
+            } else if (command == "run") {
+                runLinux();
+            } else {
+                printHelp();
+            }
+        } else if (argc == 3) {
+            std::string command = argv[1];
+            if (command == "new") {
+                std::string project_name = argv[2];
+                createProject(project_name);
+            } else {
+                printHelp();
+            }
         } else {
             printHelp();
         }
-    } else if (argc == 3) {
-        std::string command = argv[1];
-        if (command == "new") {
-            std::string project_name = argv[2];
-            createProject(project_name);
+    } else if (os == "windows") {
+        if (argc == 1) {
+            printHelp();
+        } else if (argc == 2) {
+            std::string command = argv[1];
+            if (command == "build") {
+                buildWindows();
+            } else if (command == "run") {
+                runWindows();
+            } else {
+                printHelp();
+            }
+        } else if (argc == 3) {
+            std::string command = argv[1];
+            if (command == "new") {
+                std::string project_name = argv[2];
+                createProject(project_name);
+            } else {
+                printHelp();
+            }
         } else {
             printHelp();
         }
+    } else if (os == "macos") {
     } else {
         printHelp();
     }
