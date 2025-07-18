@@ -196,6 +196,22 @@ createProject(std::string project_name) {
     createCompileCommands(project_name);
 }
 
+void
+runWindowsTest() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+}
+
+void
+runLinuxTest() {
+    if (!buildFileExists()) {
+        std::cout << "No build.cpp file exists." << std::endl;
+        return;
+    }
+}
+
 int
 main(int argc, char *argv[]) {
     if (os == "linux") {
@@ -207,6 +223,8 @@ main(int argc, char *argv[]) {
                 buildLinux();
             } else if (command == "run") {
                 runLinux();
+            } else if (command == "test") {
+                runLinuxTest();
             } else {
                 printHelp();
             }
@@ -230,6 +248,8 @@ main(int argc, char *argv[]) {
                 buildWindows();
             } else if (command == "run") {
                 runWindows();
+            } else if (command == "test") {
+                runWindowsTest();
             } else {
                 printHelp();
             }
