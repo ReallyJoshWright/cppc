@@ -322,8 +322,9 @@ class Builder {
 
             unsigned long dir_count = include_dirs.size();
             unsigned long file_count = source_files.size();
+            unsigned long lib_count = libs.size();
 
-            if (dir_count == 0 && file_count == 0) {
+            if (dir_count == 0 && file_count == 0 && lib_count == 0) {
                 std::string exe = compiler + " "
                     + debug_string
                     + optimize_string + " "
