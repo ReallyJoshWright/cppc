@@ -7,20 +7,20 @@
 
 #ifdef _WIN32
     std::string os = "windows";
-    std::string compiler = "g++";
-    inline std::string compiler_full_path = "";
+    std::string compiler = "cl";
+    std::string compiler_full_path = "";
 #elif __APPLE__
     std::string os = "macos";
     std::string compiler = "clang++";
-    inline std::string compiler_full_path = "";
+    std::string compiler_full_path = "";
 #elif __linux__
     std::string os = "linux";
     std::string compiler = "g++";
-    inline std::string compiler_full_path = "/usr/bin/g++";
+    std::string compiler_full_path = "/usr/bin/g++";
 #else
     std::string os = "linux";
     std::string compiler = "g++";
-    inline std::string compiler_full_path = "/usr/bin/g++";
+    std::string compiler_full_path = "/usr/bin/g++";
 #endif
 
 void
@@ -67,7 +67,7 @@ buildWindows() {
     }
 
     std::string command = compiler
-        + " -std=c++17 -I\"%USERPROFILE%\\.config\\.cppc\" build.cpp -o build.exe -static-libgcc -static-libstdc++";
+        + " /std:c++latest /EHsc /I\"%USERPROFILE%\\.config\\.cppc\" build.cpp /Febuild.exe";
     system(command.c_str());
     std::string exe_cmd = "build.exe";
     system(exe_cmd.c_str());
@@ -97,7 +97,7 @@ runWindows() {
     }
 
     std::string command = compiler
-        + " -std=c++23 -I$HOME/.config/.cppc build.cpp -o build && ./build run";
+        + " /std:c++latest /EHsc /I$HOME/.config/.cppc build.cpp /Febuild.exe && build.exe run";
     system(command.c_str());
     std::string clean = "rm -rf build";
     system(clean.c_str());

@@ -36,3 +36,4 @@ Write-Host "Installation Complete!"
 
 # Maybe run this
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+# C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
