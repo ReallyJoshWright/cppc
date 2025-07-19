@@ -3,7 +3,6 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <filesystem>
 
 #ifdef _WIN32
     std::string os = "windows";
@@ -144,12 +143,12 @@ createCompileCommands(std::string project_name) {
     std::filesystem::path project_name_path = project_name;
     std::filesystem::path cwd_path = std::filesystem::current_path();
     std::filesystem::path full_path = cwd_path / project_name_path;
-    std::string cwd = full_path;
+    std::string cwd = full_path.string();
 
     std::filesystem::path filename_path = "compile_commands.json";
     std::filesystem::path filename_full_path = full_path / filename_path;
 
-    std::string filename = filename_full_path;
+    std::string filename = filename_full_path.string();
     std::ofstream file(filename, std::ios::out);
 
     if (!file.is_open()) {
