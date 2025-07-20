@@ -3,13 +3,13 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <vector>
+#include <chrono>
+#include <thread>
 
 ///////////////////////////////////////////////////////////////////////////////
 // preprocessor commands
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
-    #include <windows.h>
     std::string os = "windows";
     std::string compiler = "cl";
     std::string compiler_full_path = "";
@@ -38,8 +38,6 @@ void createLinuxBuildCpp(std::filesystem::path build_cpp);
 void createLinuxCompileCommands(std::string project_name);
 
 void handleWindowsArgs(std::string cmd, std::string opt1);
-void wBuild(std::string command);
-void wExe(std::string command_exe);
 void buildWindows(bool is_verbose);
 void runWindows(bool is_verbose);
 void runWindowsTest(bool is_verbose);
@@ -229,54 +227,6 @@ handleWindowsArgs(std::string cmd, std::string opt1) {
 }
 
 void
-wBuild(std::string command) {
-    #ifdef _WIN32
-        int size_needed = MultiByteToWideChar(CP_UTF8, 0, command.c_str(), (int)command.length(), NULL, 0);
-        std::wstring wstrTo(size_needed, 0);
-        MultiByteToWideChar(CP_UTF8, 0, command.c_str(), (int)command.length(), &wstrTo[0], size_needed);
-
-        std::wstring command_w = wstrTo;
-        std::vector<wchar_t> cmdLineBuf(command_w.begin(), command_w.end());
-        cmdLineBuf.push_back(L'\0');
-
-        STARTUPINFO si = { sizeof(si) };
-        PROCESS_INFORMATION pi;
-
-        if (CreateProcessW(NULL, cmdLineBuf.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-            WaitForSingleObject(pi.hProcess, INFINITE);
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-        } else {
-            std::cout << "An error occurred with build.exe" << std::endl;
-        }
-    #endif
-}
-
-void
-wExe(std::string command_exe) {
-    #ifdef _WIN32
-        int size_needed = MultiByteToWideChar(CP_UTF8, 0, command_exe.c_str(), (int)command_exe.length(), NULL, 0);
-        std::wstring wstrTo(size_needed, 0);
-        MultiByteToWideChar(CP_UTF8, 0, command_exe.c_str(), (int)command_exe.length(), &wstrTo[0], size_needed);
-
-        std::wstring command_w = wstrTo;
-        std::vector<wchar_t> cmdLineBuf(command_w.begin(), command_w.end());
-        cmdLineBuf.push_back(L'\0');
-
-        STARTUPINFO si = { sizeof(si) };
-        PROCESS_INFORMATION pi;
-
-        if (CreateProcessW(NULL, cmdLineBuf.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
-            WaitForSingleObject(pi.hProcess, INFINITE);
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
-        } else {
-            std::cout << "An error occurred with build.exe" << std::endl;
-        }
-    #endif
-}
-
-void
 buildWindows(bool is_verbose) {
     if (!buildFileExists()) {
         std::cout << "No build.cpp file exists." << std::endl;
@@ -292,18 +242,16 @@ buildWindows(bool is_verbose) {
 
     if (is_verbose) {
         std::cout << command << std::endl;
-        // system(command.c_str());
-        wBuild(command);
+        system(command.c_str());
         std::cout << command_exe << std::endl;
-        // system(command_exe.c_str());
-        wExe(command_exe);
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        system(command_exe.c_str());
         std::cout << clean << std::endl;
         system(clean.c_str());
     } else {
-        // system(command.c_str());
-        // system(command_exe.c_str());
-        wBuild(command);
-        wExe(command_exe);
+        system(command.c_str());
+        system(command_exe.c_str());
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         system(clean.c_str());
     }
 }
@@ -328,10 +276,12 @@ runWindows(bool is_verbose) {
         std::cout << clean << std::endl;
         system(command.c_str());
         system(command_exe.c_str());
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         system(clean.c_str());
     } else {
         system(command.c_str());
         system(command_exe.c_str());
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         system(clean.c_str());
     }
 }
