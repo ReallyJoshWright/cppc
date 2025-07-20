@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
+#include <vector>
 
 ///////////////////////////////////////////////////////////////////////////////
 // preprocessor commands
@@ -230,10 +231,18 @@ handleWindowsArgs(std::string cmd, std::string opt1) {
 void
 wBuild(std::string command) {
     #ifdef _WIN32
+        int size_needed = MultiByteToWideChar(CP_UTF8, 0, command.c_str(), (int)command.length(), NULL, 0);
+        std::wstring wstrTo(size_needed, 0);
+        MultiByteToWideChar(CP_UTF8, 0, command.c_str(), (int)command.length(), &wstrTo[0], size_needed);
+
+        std::wstring command_w = wstrTo;
+        std::vector<wchar_t> cmdLineBuf(command_w.begin(), command_w.end());
+        cmdLineBuf.push_back(L'\0');
+
         STARTUPINFO si = { sizeof(si) };
         PROCESS_INFORMATION pi;
 
-        if (CreateProcess(NULL, command, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+        if (CreateProcessW(NULL, cmdLineBuf.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
             WaitForSingleObject(pi.hProcess, INFINITE);
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
@@ -246,10 +255,18 @@ wBuild(std::string command) {
 void
 wExe(std::string command_exe) {
     #ifdef _WIN32
+        int size_needed = MultiByteToWideChar(CP_UTF8, 0, command_exe.c_str(), (int)command_exe.length(), NULL, 0);
+        std::wstring wstrTo(size_needed, 0);
+        MultiByteToWideChar(CP_UTF8, 0, command_exe.c_str(), (int)command_exe.length(), &wstrTo[0], size_needed);
+
+        std::wstring command_w = wstrTo;
+        std::vector<wchar_t> cmdLineBuf(command_w.begin(), command_w.end());
+        cmdLineBuf.push_back(L'\0');
+
         STARTUPINFO si = { sizeof(si) };
         PROCESS_INFORMATION pi;
 
-        if (CreateProcess(NULL, command_exe, NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
+        if (CreateProcessW(NULL, cmdLineBuf.data(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi)) {
             WaitForSingleObject(pi.hProcess, INFINITE);
             CloseHandle(pi.hProcess);
             CloseHandle(pi.hThread);
