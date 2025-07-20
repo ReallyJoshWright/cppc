@@ -8,6 +8,7 @@
 // preprocessor commands
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
+    #include <windows.h>
     std::string os = "windows";
     std::string compiler = "cl";
     std::string compiler_full_path = "";
@@ -229,8 +230,6 @@ handleWindowsArgs(std::string cmd, std::string opt1) {
 void
 wBuild(std::string command) {
     #ifdef _WIN32
-        #include <windows.h>
-    
         STARTUPINFO si = { sizeof(si) };
         PROCESS_INFORMATION pi;
 
@@ -247,8 +246,6 @@ wBuild(std::string command) {
 void
 wExe(std::string command_exe) {
     #ifdef _WIN32
-        #include <windows.h>
-    
         STARTUPINFO si = { sizeof(si) };
         PROCESS_INFORMATION pi;
 
