@@ -37,3 +37,6 @@ Write-Host "Installation Complete!"
 # Maybe run this
 # Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 # C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat
+# cmd.exe /c "cl /std:c++latest /EHsc /I./include /Feapp.exe main.cpp && app.exe"
+#
+# setx PATH "%PATH%;C:\path\to\your\executable\directory"

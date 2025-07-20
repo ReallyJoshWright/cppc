@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 #ifdef _WIN32
     inline std::string os = "windows";
-    inline std::string compiler = "g++";
+    inline std::string compiler = "cl";
     inline std::string compiler_full_path = "";
 #elif __APPLE__
     inline std::string os = "macos";
@@ -224,18 +224,34 @@ class Builder {
             std::string value = "";
 
             for (auto d : options) {
-                if (d == Debug::G) {
-                    value = "-g";
-                    list.push_back(value);
-                } else if (d == Debug::Wall) {
-                    value = "-Wall";
-                    list.push_back(value);
-                } else if (d == Debug::Wextra) {
-                    value = "-Wextra";
-                    list.push_back(value);
-                } else if (d == Debug::Pedantic) {
-                    value = "-pedantic";
-                    list.push_back(value);
+                if (os == "linux") {
+                    if (d == Debug::G) {
+                        value = "-g";
+                        list.push_back(value);
+                    } else if (d == Debug::Wall) {
+                        value = "-Wall";
+                        list.push_back(value);
+                    } else if (d == Debug::Wextra) {
+                        value = "-Wextra";
+                        list.push_back(value);
+                    } else if (d == Debug::Pedantic) {
+                        value = "-pedantic";
+                        list.push_back(value);
+                    }
+                } else if(os == "windows") {
+                    if (d == Debug::G) {
+                        value = "/ZI";
+                        list.push_back(value);
+                    } else if (d == Debug::Wall) {
+                        value = "/W4";
+                        list.push_back(value);
+                    } else if (d == Debug::Wextra) {
+                        value = "";
+                        list.push_back(value);
+                    } else if (d == Debug::Pedantic) {
+                        value = "";
+                        list.push_back(value);
+                    }
                 }
             }
 
@@ -244,12 +260,22 @@ class Builder {
 
         std::string getOptimizeString(Optimize option) {
             std::string value = "";
-            if (option == Optimize::Debug) {
-                value = "-O0";
-            } else if (option == Optimize::Embedded) {
-                value = "-Os";
-            } else if (option == Optimize::Release) {
-                value = "-O3";
+            if (os == "linux") {
+                if (option == Optimize::Debug) {
+                    value = "-O0";
+                } else if (option == Optimize::Embedded) {
+                    value = "-Os";
+                } else if (option == Optimize::Release) {
+                    value = "-O3";
+                }
+            } else if(os == "windows") {
+                if (option == Optimize::Debug) {
+                    value = "/Od";
+                } else if (option == Optimize::Embedded) {
+                    value = "O1";
+                } else if (option == Optimize::Release) {
+                    value = "/O2";
+                }
             }
 
             return value;
@@ -257,16 +283,30 @@ class Builder {
 
         std::string getVersionString(Version option) {
             std::string value = "";
-            if (option == Version::V11) {
-                value = "-std=c++11";
-            } else if (option == Version::V14) {
-                value = "-std=c++14";
-            } else if (option == Version::V17) {
-                value = "-std=c++17";
-            } else if (option == Version::V20) {
-                value = "-std=c++20";
-            } else if (option == Version::V23) {
-                value = "-std=c++23";
+            if (os == "linux") {
+                if (option == Version::V11) {
+                    value = "-std=c++11";
+                } else if (option == Version::V14) {
+                    value = "-std=c++14";
+                } else if (option == Version::V17) {
+                    value = "-std=c++17";
+                } else if (option == Version::V20) {
+                    value = "-std=c++20";
+                } else if (option == Version::V23) {
+                    value = "-std=c++23";
+                }
+            } else if (os == "windows") {
+                if (option == Version::V11) {
+                    value = "/std:c++11";
+                } else if (option == Version::V14) {
+                    value = "/std:c++14";
+                } else if (option == Version::V17) {
+                    value = "/std:c++17";
+                } else if (option == Version::V20) {
+                    value = "/std:c++20";
+                } else if (option == Version::V23) {
+                    value = "/std:c++latest";
+                }
             }
 
             return value;
@@ -275,37 +315,73 @@ class Builder {
         std::string getCompileCommand() {
             std::string debug_string = "";
             for (Debug d : options.debug) {
-                if (d == Debug::G) {
-                    debug_string += " -g ";
-                } else if (d == Debug::Wall) {
-                    debug_string += " -Wall ";
-                } else if (d == Debug::Wextra) {
-                    debug_string += " -Wextra ";
-                } else if (d == Debug::Pedantic) {
-                    debug_string += " -pedantic ";
+                if (os == "linux") {
+                    if (d == Debug::G) {
+                        debug_string += " -g ";
+                    } else if (d == Debug::Wall) {
+                        debug_string += " -Wall ";
+                    } else if (d == Debug::Wextra) {
+                        debug_string += " -Wextra ";
+                    } else if (d == Debug::Pedantic) {
+                        debug_string += " -pedantic ";
+                    }
+                } else if (os == "windows") {
+                    if (d == Debug::G) {
+                        debug_string += " /ZI ";
+                    } else if (d == Debug::Wall) {
+                        debug_string += " /W4 ";
+                    } else if (d == Debug::Wextra) {
+                        debug_string += "";
+                    } else if (d == Debug::Pedantic) {
+                        debug_string += "";
+                    }
                 }
             }
 
             std::string optimize_string = "";
-            if (options.optimize == Optimize::Debug) {
-                optimize_string = "-O0";
-            } else if (options.optimize == Optimize::Release) {
-                optimize_string = "-O3";
-            } else if (options.optimize == Optimize::Embedded) {
-                optimize_string = "-Os";
+            if (os == "linux") {
+                if (options.optimize == Optimize::Debug) {
+                    optimize_string = "-O0";
+                } else if (options.optimize == Optimize::Release) {
+                    optimize_string = "-O3";
+                } else if (options.optimize == Optimize::Embedded) {
+                    optimize_string = "-Os";
+                }
+            } else if (os == "windows") {
+                if (options.optimize == Optimize::Debug) {
+                    optimize_string = "/Od";
+                } else if (options.optimize == Optimize::Release) {
+                    optimize_string = "/O1";
+                } else if (options.optimize == Optimize::Embedded) {
+                    optimize_string = "/O2";
+                }
             }
 
             std::string version_string = "";
-            if (options.version == Version::V11) {
-                version_string = "-std=c++11";
-            } else if (options.version == Version::V14) {
-                version_string = "-std=c++14";
-            } else if (options.version == Version::V17) {
-                version_string = "-std=c++17";
-            } else if (options.version == Version::V20) {
-                version_string = "-std=c++20";
-            } else if (options.version == Version::V23) {
-                version_string = "-std=c++23";
+            if (os == "linux") {
+                if (options.version == Version::V11) {
+                    version_string = "-std=c++11";
+                } else if (options.version == Version::V14) {
+                    version_string = "-std=c++14";
+                } else if (options.version == Version::V17) {
+                    version_string = "-std=c++17";
+                } else if (options.version == Version::V20) {
+                    version_string = "-std=c++20";
+                } else if (options.version == Version::V23) {
+                    version_string = "-std=c++23";
+                }
+            } else if (os == "windows") {
+                if (options.version == Version::V11) {
+                    version_string = "/std:c++11";
+                } else if (options.version == Version::V14) {
+                    version_string = "/std:c++14";
+                } else if (options.version == Version::V17) {
+                    version_string = "/std:c++17";
+                } else if (options.version == Version::V20) {
+                    version_string = "/std:c++20";
+                } else if (options.version == Version::V23) {
+                    version_string = "/std:c++latest";
+                }
             }
 
             if (os == "linux") {
@@ -316,7 +392,7 @@ class Builder {
                 }
             } else if (os == "windows") {
                 if (options.target == Targets::Windows) {
-                    compiler = "g++";
+                    compiler = "cl";
                 }
             }
 
@@ -332,12 +408,6 @@ class Builder {
                     + options.root_source_file
                     + " -o "
                     + options.name;
-
-                if (os == "windows") {
-                    exe = exe
-                        + " -static-libgcc"
-                        + " -static-libstdc++";
-                }
 
                 return exe;
             } else {
@@ -377,12 +447,6 @@ class Builder {
                     + " -o "
                     + options.name
                     + lib_string;
-
-                if (os == "windows") {
-                    exe = exe
-                        + " -static-libgcc"
-                        + " -static-libstdc++";
-                }
 
                 return exe;
             }
