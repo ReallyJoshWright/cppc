@@ -285,8 +285,8 @@ buildWindows(bool is_verbose) {
     } else {
         // system(command.c_str());
         // system(command_exe.c_str());
-        wBuild(command.c_str());
-        wExe(command_exe.c_str());
+        wBuild(command);
+        wExe(command_exe);
         system(clean.c_str());
     }
 }
