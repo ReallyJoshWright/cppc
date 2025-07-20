@@ -88,10 +88,10 @@ buildLinux(bool is_verbose) {
     std::string clean = "rm -rf build";
 
     if (is_verbose) {
-        system(command.c_str());
         std::cout << command << std::endl;
-        system(clean.c_str());
+        system(command.c_str());
         std::cout << clean << std::endl;
+        system(clean.c_str());
     } else {
         system(command.c_str());
         system(clean.c_str());
@@ -234,16 +234,20 @@ buildWindows(bool is_verbose) {
     std::string command = "cmd.exe /c \""
         + compiler
         + " /std:c++latest /EHsc /I\"%USERPROFILE%\\.config\\.cppc\" "
-        "build.cpp /Febuild.exe && build.exe\"";
+        "build.cpp /Febuild.exe\"";
+    std::string command_exe = "cmd.exe /c \"build.exe\"";
     std::string clean = "del build.exe";
 
     if (is_verbose) {
-        system(command.c_str());
         std::cout << command << std::endl;
-        system(clean.c_str());
+        system(command.c_str());
+        std::cout << command_exe << std::endl;
+        system(command_exe.c_str());
         std::cout << clean << std::endl;
+        system(clean.c_str());
     } else {
         system(command.c_str());
+        system(command_exe.c_str());
         system(clean.c_str());
     }
 }
@@ -258,16 +262,20 @@ runWindows(bool is_verbose) {
     std::string command = "cmd.exe /c \""
         + compiler
         + " /std:c++latest /EHsc /I\"%USERPROFILE%\\.config\\.cppc\" "
-        "build.cpp /Febuild.exe && build.exe run\"";
+        "build.cpp /Febuild.exe\"";
+    std::string command_exe = "cmd.exe /c \"build.exe run\"";
     std::string clean = "del build.exe";
 
     if (is_verbose) {
         std::cout << command << std::endl;
+        std::cout << command_exe << std::endl;
         std::cout << clean << std::endl;
         system(command.c_str());
+        system(command_exe.c_str());
         system(clean.c_str());
     } else {
         system(command.c_str());
+        system(command_exe.c_str());
         system(clean.c_str());
     }
 }
