@@ -400,55 +400,112 @@ class Builder {
             unsigned long file_count = source_files.size();
             unsigned long lib_count = libs.size();
 
-            if (dir_count == 0 && file_count == 0 && lib_count == 0) {
-                std::string exe = compiler + " "
-                    + debug_string
-                    + optimize_string + " "
-                    + version_string + " "
-                    + options.root_source_file
-                    + " -o "
-                    + options.name;
+            if (os == "linux") {
+                if (dir_count == 0 && file_count == 0 && lib_count == 0) {
+                    std::string exe = compiler + " "
+                        + debug_string
+                        + optimize_string + " "
+                        + version_string + " "
+                        + options.root_source_file
+                        + " -o "
+                        + options.name;
 
-                return exe;
+                    return exe;
+                } else {
+                    std::string dir_string = "";
+                    std::string file_string = "";
+                    std::string lib_string = "";
+                    std::string lib_dir_string = "";
+
+                    for (auto dir : include_dirs) {
+                        std::string temp = " " + dir + " ";
+                        dir_string += temp;
+                    }
+
+                    for (auto f : source_files) {
+                        std::string temp = " " + f + " ";
+                        file_string += temp;
+                    }
+
+                    for (auto libd : lib_dirs) {
+                        std::string temp = " " + libd + " ";
+                        lib_dir_string += temp;
+                    }
+
+                    for (auto lib : libs) {
+                        std::string temp = " " + lib + " ";
+                        lib_string += temp;
+                    }
+
+                    std::string exe = compiler + " "
+                        + debug_string
+                        + optimize_string + " "
+                        + version_string + " "
+                        + dir_string
+                        + lib_dir_string
+                        + file_string
+                        + options.root_source_file
+                        + " -o "
+                        + options.name
+                        + lib_string;
+
+                    return exe;
+                }
+            } else if (os == "windows") {
+                if (dir_count == 0 && file_count == 0 && lib_count == 0) {
+                    std::string exe = compiler + " "
+                        + debug_string
+                        + optimize_string + " "
+                        + version_string + " "
+                        + cleanUpSubDir(options.root_source_file)
+                        + " /Fe"
+                        + options.name
+                        + ".exe";
+
+                    return exe;
+                } else {
+                    std::string dir_string = "";
+                    std::string file_string = "";
+                    std::string lib_string = "";
+                    std::string lib_dir_string = "";
+
+                    for (auto dir : include_dirs) {
+                        std::string temp = " " + dir + " ";
+                        dir_string += temp;
+                    }
+
+                    for (auto f : source_files) {
+                        std::string temp = " " + f + " ";
+                        file_string += temp;
+                    }
+
+                    for (auto libd : lib_dirs) {
+                        std::string temp = " " + libd + " ";
+                        lib_dir_string += temp;
+                    }
+
+                    for (auto lib : libs) {
+                        std::string temp = " " + lib + " ";
+                        lib_string += temp;
+                    }
+
+                    std::string exe = compiler + " "
+                        + debug_string
+                        + optimize_string + " "
+                        + version_string + " "
+                        + dir_string
+                        + lib_dir_string
+                        + file_string
+                        + cleanUpSubDir(options.root_source_file)
+                        + " /Fe"
+                        + options.name
+                        + ".exe "
+                        + lib_string;
+
+                    return exe;
+                }
             } else {
-                std::string dir_string = "";
-                std::string file_string = "";
-                std::string lib_string = "";
-                std::string lib_dir_string = "";
-
-                for (auto dir : include_dirs) {
-                    std::string temp = " " + dir + " ";
-                    dir_string += temp;
-                }
-
-                for (auto f : source_files) {
-                    std::string temp = " " + f + " ";
-                    file_string += temp;
-                }
-
-                for (auto libd : lib_dirs) {
-                    std::string temp = " " + libd + " ";
-                    lib_dir_string += temp;
-                }
-
-                for (auto lib : libs) {
-                    std::string temp = " " + lib + " ";
-                    lib_string += temp;
-                }
-
-                std::string exe = compiler + " "
-                    + debug_string
-                    + optimize_string + " "
-                    + version_string + " "
-                    + dir_string
-                    + lib_dir_string
-                    + file_string
-                    + options.root_source_file
-                    + " -o "
-                    + options.name
-                    + lib_string;
-
-                return exe;
+                return "";
             }
         }
 
