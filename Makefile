@@ -7,7 +7,7 @@ $(TARGET): cppc.cpp
 	g++ -std=c++23 cppc.cpp -o $(TARGET)
 
 $(WINDOWS_TARGET): cppc.cpp
-	x86_64-w64-mingw32-g++ -std=c++23 cppc.cpp -o $(WINDOWS_TARGET) -static-libgcc -static-libstdc++
+	cl /std:c++latest /EHsc cppc.cpp /Fe$(WINDOWS_TARGET)
 
 .PHONY: clean windows
 
