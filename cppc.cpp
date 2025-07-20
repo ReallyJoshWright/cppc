@@ -276,10 +276,10 @@ buildWindows(bool is_verbose) {
     if (is_verbose) {
         std::cout << command << std::endl;
         // system(command.c_str());
-        wBuild(command.c_str());
+        wBuild(command);
         std::cout << command_exe << std::endl;
         // system(command_exe.c_str());
-        wExe(command_exe.c_str());
+        wExe(command_exe);
         std::cout << clean << std::endl;
         system(clean.c_str());
     } else {
